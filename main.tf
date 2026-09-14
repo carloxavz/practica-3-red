@@ -26,7 +26,7 @@ resource "google_compute_subnetwork" "publica" {
 
 resource "google_compute_instance" "app" {
   name         = "${var.prefijo}-app"
-  machine_type = var.tipo_maquina
+  machine_type = "n2-standard-2"
   zone         = "us-central1-a"
   tags         = ["foo", "bar"]
 
