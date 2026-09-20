@@ -38,7 +38,7 @@ resource "google_compute_instance" "app" {
 
   network_interface {
     # la máquina debe quedar en tu subred, no en la default
-    subnetwork = "https://www.googleapis.com/compute/v1/projects/nube-2026-ii/regions/us-central1/subnetworks/avendano-sub-publica"
+    subnetwork = google_compute_subnetwork.publica.id
     # un bloque vacío aquí otorga una IP pública efímera
     access_config {}
   }
