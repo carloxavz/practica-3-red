@@ -28,7 +28,7 @@ resource "google_compute_instance" "app" {
   name         = "${var.prefijo}-app"
   machine_type = "n2-standard-2"
   zone         = "us-central1-a"
-  tags         = ["foo", "bar"]
+  tags         = ["servidor-web"]
 
   boot_disk {
     initialize_params {
@@ -44,4 +44,28 @@ resource "google_compute_instance" "app" {
   }
 
   metadata_startup_script = file("arranque.sh")
+}
+resource "google_compute_firewall" "app_http" {
+  name    = "${var.prefijo}-permitir-http"
+  network = google_compute_network.vpc.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["80"] # El puerto por defecto para tráfico HTTP (web)
+  }
+
+  source_ranges = ["0.0.0.0/0"] # Significa "permitir desde cualquier IP de internet"
+  target_tags   = ["servidor-web"] # Asegúrate de que esta sea la misma etiqueta de tu instancia
+}
+
+resource "google_compute_firewall" "ssh_iap" {
+  name    = "${var.prefijo}-permitir-ssh-iap"
+  network = google_compute_network.vpc.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+  source_ranges = ["35.235.240.0/20"]
+  target_tags   = ["servidor-web"] 
 }
